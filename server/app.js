@@ -1,8 +1,8 @@
 const express = require("express");
-const db = require("./lib/db");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const Book = require("./models/books")
+const Book = require("./models/books");
+const booksRouter = require("./routes/book");
 
 /*
   We create an express app calling
@@ -28,71 +28,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/books", (req, res) => {
-  db.findAll().then((posts) => {
-    res.json({
-      posts,
-    });
+app.get("/", (req, res) => {
+  res.json({
+    "/books": "read and create new articles",
+    "/books/:id": "read, update and delete an individual article",
   });
 });
 
-app.post("/books", (req, res) => {
-  Article.create(req.body)
-    .then((newArticle) => {
-      res.status(201).send(newArticle);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-});
-
-app.get("/books/:id", (req, res) => {
-  if (isNaN(req.params.id)) {
-    res.status(400);
-    console.log(req.params.id + "is not a number");
-    process.exit;
-  }
-  db.findById(req.params.id).then((post) => {
-    if (post) {
-      res.json({
-        post,
-      });
-    } else {
-      res.json({
-        "not found": "no post with this id",
-      });
-    }
-  });
-});
-
-app.delete("/books/:id", (req, res) => {
-  db.deleteById(req.params.id)
-    .then(() => {
-      console.log("deleted succesfully");
-    })
-    .catch((error) => {
-      res.send(error);
-    });
-});
-
-app.patch("/books/:id", (req, res) => {
-  const id = req.params.id;
-  const change = req.body;
-
-  if (Object.keys(change).length === 0) {
-    res.status(400);
-    res.send("You need to provide what you want to change");
-  } else {
-    db.updateById(id, change).then((updatedPost) => {
-      if (updatedPost) {
-        res.json(updatedPost);
-      } else {
-        res.status(404);
-        res.send("didnt found post");
-      }
-    });
-  }
-});
+app.use("/books", booksRouter);
 
 /*
   We have to start the server. We make it listen on the port 4000
@@ -102,6 +45,7 @@ mongoose
   .connect("mongodb://localhost:27017/books-api", {
     useUnifiedTopology: true,
     useNewUrlParser: true,
+    useFindAndModify: false,
   })
   .then(() => {
     console.log("conected to Mongo");
