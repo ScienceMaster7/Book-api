@@ -10,6 +10,12 @@ function validatePost(req, res, next) {
     });
     return;
   }
+  if (req.body.title.length > 80) {
+    res.status(400).json({
+      error: "title property must not be longer then 80 character",
+    });
+    return;
+  }
   if (!req.body.body) {
     res.status(400).json({
       error: "Request body must contain a body property",
@@ -72,10 +78,9 @@ router.delete("/:id", (req, res) => {
 });
 
 router.patch("/:id", (req, res) => {
-  const id = req.params.id;
-  const change = req.body;
+  const { id } = req.params;
 
-  Book.findByIdAndUpdate(id, change, { new: true })
+  Book.findByIdAndUpdate(id, req.body, { new: true })
     .then((updatedBook) => {
       res.send(updatedBook);
     })
