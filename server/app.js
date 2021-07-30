@@ -2,7 +2,7 @@ const express = require("express");
 const db = require("./lib/db");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const Article = require("./models/articles");
+const Book = require("./models/books")
 
 /*
   We create an express app calling
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/articles", (req, res) => {
+app.get("/books", (req, res) => {
   db.findAll().then((posts) => {
     res.json({
       posts,
@@ -36,7 +36,7 @@ app.get("/articles", (req, res) => {
   });
 });
 
-app.post("/articles", (req, res) => {
+app.post("/books", (req, res) => {
   Article.create(req.body)
     .then((newArticle) => {
       res.status(201).send(newArticle);
@@ -46,7 +46,7 @@ app.post("/articles", (req, res) => {
     });
 });
 
-app.get("/articles/:id", (req, res) => {
+app.get("/books/:id", (req, res) => {
   if (isNaN(req.params.id)) {
     res.status(400);
     console.log(req.params.id + "is not a number");
@@ -65,7 +65,7 @@ app.get("/articles/:id", (req, res) => {
   });
 });
 
-app.delete("/articles/:id", (req, res) => {
+app.delete("/books/:id", (req, res) => {
   db.deleteById(req.params.id)
     .then(() => {
       console.log("deleted succesfully");
@@ -75,7 +75,7 @@ app.delete("/articles/:id", (req, res) => {
     });
 });
 
-app.patch("/articles/:id", (req, res) => {
+app.patch("/books/:id", (req, res) => {
   const id = req.params.id;
   const change = req.body;
 
@@ -99,7 +99,7 @@ app.patch("/articles/:id", (req, res) => {
 
 */
 mongoose
-  .connect("mongodb://localhost:27017/articles-api", {
+  .connect("mongodb://localhost:27017/books-api", {
     useUnifiedTopology: true,
     useNewUrlParser: true,
   })
