@@ -73,7 +73,7 @@ router.delete("/:id", (req, res) => {
       res.status(204).end();
     })
     .catch((error) => {
-      res.send(error);
+      res.status(500).send(error);
     });
 });
 
@@ -86,7 +86,7 @@ router.patch("/:id", (req, res) => {
     })
     .catch((error) => {
       console.error(error);
-      res.status(500);
+      res.status(500).end();
     });
 });
 
